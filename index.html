@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mastodon id finder</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: sans-serif;
+        font-size: 1.25rem;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        block-size: 100%;
+        background-color: #eee;
+        background-image: conic-gradient(at 125% 50%, rgb(183, 140, 247), rgb(255, 124, 148), rgb(255, 207, 13), rgb(255, 124, 148), rgb(183, 140, 247));
+      }
+      body {
+        block-size: 100%;
+        display: grid;
+        place-content: center;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        letter-spacing: -1px;
+      }
+
+      form {
+        background-color: #fff;
+        border-radius: 1rem;
+        box-shadow: 0px 2px 2.2px rgba(0, 0, 0, 0.02), 0px 4.8px 5.3px rgba(0, 0, 0, 0.028), 0px 9px 10px rgba(0, 0, 0, 0.035), 0px 16.1px 17.9px rgba(0, 0, 0, 0.042), 0px 30.1px 33.4px rgba(0, 0, 0, 0.05), 0px 72px 80px rgba(0, 0, 0, 0.07);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        inline-size: min(90vw, 25rem);
+        padding: 2rem;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        font-size: 0.75rem;
+        font-weight: 700;
+        gap: 0.5rem;
+        text-transform: uppercase;
+      }
+
+      input,
+      output {
+        background-color: #eee;
+        border-radius: 0.5rem;
+        border: 0;
+        inline-size: 100%;
+        padding: 0.75rem;
+      }
+
+      output {
+        font-family: 'SF Mono', monospace;
+        text-align: center;
+      }
+
+      [type='submit'] {
+        background-color: #1e1e1e;
+        color: #fff;
+      }
+
+      ::placeholder {
+        color: rgb(0 0 0 / 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <form action="">
+        <h1>Find your Mastodon ID</h1>
+        <label>
+          Username
+          <input type="text" placeholder="e.g blackspike" class="username" />
+        </label>
+        <label>
+          Server
+          <input type="text" placeholder="e.g mastodon.cloud" class="server" />
+        </label>
+        <input class="btn" type="submit" value="Get your Mastodon ID" />
+        <output hidden></output>
+      </form>
+    </main>
+
+    <script>
+      const userName = document.querySelector('.username')
+      const server = document.querySelector('.server')
+      const button = document.querySelector('.btn')
+      const output = document.querySelector('output')
+
+      const fetchId = async (e) => {
+        e.preventDefault()
+
+        try {
+          const getId = await fetch(`https://${server.value}/api/v2/search?q=@${userName.value}`)
+
+          const { accounts } = await getId.json()
+
+          output.value = accounts[0].id
+          output.hidden = false
+        } catch (error) {
+          console.error(error)
+          output.value = 'Are your details correct?'
+          output.hidden = false
+        }
+      }
+
+      button.addEventListener('click', fetchId)
+    </script>
+  </body>
+</html>
