@@ -7,20 +7,29 @@
     <!-- Primary Meta Tags -->
     <title>Find your Mastodon account ID</title>
     <meta name="title" content="Find your Mastodon account ID" />
-    <meta name="description" content="A little tool to help find your Mastodon account ID" />
+    <meta
+      name="description"
+      content="A little tool to help find your Mastodon account ID"
+    />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mastodon-id.party/" />
     <meta property="og:title" content="Find your Mastodon account ID" />
-    <meta property="og:description" content="A little tool to help find your Mastodon account ID" />
+    <meta
+      property="og:description"
+      content="A little tool to help find your Mastodon account ID"
+    />
     <meta property="og:image" content="/social-image.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://mastodon-id.party/" />
     <meta property="twitter:title" content="Find your Mastodon account ID" />
-    <meta property="twitter:description" content="A little tool to help find your Mastodon account ID" />
+    <meta
+      property="twitter:description"
+      content="A little tool to help find your Mastodon account ID"
+    />
     <meta property="twitter:image" content="/social-image.png" />
 
     <style>
@@ -34,7 +43,14 @@
       html {
         block-size: 100%;
         background-color: #eee;
-        background-image: conic-gradient(at 125% 50%, rgb(183, 140, 247), rgb(255, 124, 148), rgb(255, 207, 13), rgb(255, 124, 148), rgb(183, 140, 247));
+        background-image: conic-gradient(
+          at 125% 50%,
+          rgb(183, 140, 247),
+          rgb(255, 124, 148),
+          rgb(255, 207, 13),
+          rgb(255, 124, 148),
+          rgb(183, 140, 247)
+        );
       }
       body {
         block-size: 100%;
@@ -50,7 +66,12 @@
       form {
         background-color: #fff;
         border-radius: clamp(1rem, 5vw, 2rem);
-        box-shadow: 0px 2px 2.2px rgba(0, 0, 0, 0.02), 0px 4.8px 5.3px rgba(0, 0, 0, 0.028), 0px 9px 10px rgba(0, 0, 0, 0.035), 0px 16.1px 17.9px rgba(0, 0, 0, 0.042), 0px 30.1px 33.4px rgba(0, 0, 0, 0.05), 0px 72px 80px rgba(0, 0, 0, 0.07);
+        box-shadow: 0px 2px 2.2px rgba(0, 0, 0, 0.02),
+          0px 4.8px 5.3px rgba(0, 0, 0, 0.028),
+          0px 9px 10px rgba(0, 0, 0, 0.035),
+          0px 16.1px 17.9px rgba(0, 0, 0, 0.042),
+          0px 30.1px 33.4px rgba(0, 0, 0, 0.05),
+          0px 72px 80px rgba(0, 0, 0, 0.07);
         display: flex;
         flex-direction: column;
         gap: 1rem;
@@ -78,11 +99,11 @@
       }
 
       output {
-        font-family: 'SF Mono', monospace;
+        font-family: "SF Mono", monospace;
         text-align: center;
       }
 
-      [type='submit'] {
+      [type="submit"] {
         background-color: #1e1e1e;
         color: #fff;
       }
@@ -91,7 +112,11 @@
         color: rgb(0 0 0 / 0.2);
       }
     </style>
-    <script defer data-domain="mastodon-id.party" src="https://plausible.io/js/script.js"></script>
+    <script
+      defer
+      data-domain="mastodon-id.party"
+      src="https://plausible.io/js/script.js"
+    ></script>
   </head>
   <body>
     <main>
@@ -111,29 +136,39 @@
     </main>
 
     <script>
-      const userName = document.querySelector('.username')
-      const server = document.querySelector('.server')
-      const button = document.querySelector('.btn')
-      const output = document.querySelector('output')
+      const userName = document.querySelector(".username")
+      const server = document.querySelector(".server")
+      const button = document.querySelector(".btn")
+      const output = document.querySelector("output")
 
       const fetchId = async (e) => {
         e.preventDefault()
 
         try {
-          const getId = await fetch(`https://${server.value}/api/v2/search?q=@${userName.value}`)
+          let userTidied = userName.value.replace("@", "").trim()
+          let serverTidied = server.value
+            .replace("https://", "")
+            .replace("www.", "")
+            .trim()
+
+          const getId = await fetch(
+            `https://${serverTidied}/api/v2/search?q=@${userTidied}`
+          )
 
           const { accounts } = await getId.json()
+
+          console.log(accounts)
 
           output.value = accounts[0].id
           output.hidden = false
         } catch (error) {
           console.error(error)
-          output.value = 'Are your details correct?'
+          output.value = "Are your details correct?"
           output.hidden = false
         }
       }
 
-      button.addEventListener('click', fetchId)
+      button.addEventListener("click", fetchId)
     </script>
   </body>
 </html>
